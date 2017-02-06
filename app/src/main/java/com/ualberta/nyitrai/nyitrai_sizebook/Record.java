@@ -47,4 +47,14 @@ public class Record {
         fields.add(field);
     }
 
+    @Override
+    public String toString() {
+        String text = "";
+        for (Field field : fields) {
+            text += field.getFieldName() + " : " + String.valueOf(field.getMeasurement()) + "\n";
+
+        }
+        return text;
+    }
+
 }

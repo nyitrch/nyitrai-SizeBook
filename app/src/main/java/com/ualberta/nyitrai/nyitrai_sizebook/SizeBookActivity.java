@@ -35,6 +35,7 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     private static final String FILENAME = "nyitrai-SizeBook.sav";
 
     private ListView oldRecords;
+    private ArrayAdapter<Record> adapter;
 
     /**
      * This is called when the activity is first created.
@@ -45,6 +46,7 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        // Initialize oldRecords from file.
         oldRecords = (ListView) findViewById(R.id.oldRecords);
 
         // New Record Button Pressed
@@ -71,12 +73,26 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
      */
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
 
         loadFromFile();
+
+        // Get records from controller and setup adapter.
+        BookController bc = SizeBookApplication.getBookController();
+        ArrayList<Record> records = bc.getRecords();
+
+        adapter = new ArrayAdapter<Record>(this, R.layout.list_item, records);
+        oldRecords.setAdapter(adapter);
     }
 
+    /**
+     * Load old records from file with GSON. Initially looks for a file on the Android
+     * device. If one is found, it reads records from it. If one is not found, it creates
+     * an empty ArrayList. </br></br>
+     *
+     * After either grabbing the old records from the file, or creating an empty list,
+     * sends the ArrayList of Records to the controller.
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -89,25 +105,20 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
             // questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
             Type listType = new TypeToken<ArrayList<Record>>(){}.getType();
             ArrayList<Record> records = gson.fromJson(in, listType);
-            ArrayAdapter<Record> adapter = new ArrayAdapter<Record>(this,
-                    R.layout.list_item, records);
 
-            // Send records and adapter to controller.
+            // Send old records to controller.
             BookController bc = SizeBookApplication.getBookController();
             bc.setRecords(records);
-            bc.setAdapter(adapter);
 
             // If file is not found, create new record list and new adapter.
         } catch (FileNotFoundException e) {
 
             ArrayList<Record> records = new ArrayList<Record>();
-            ArrayAdapter<Record> adapter = new ArrayAdapter<Record>(this,
-                    R.layout.list_item, records);
 
-            // Send new empty records and adapter to controller.
+            // Send new empty records to controller.
             BookController bc = SizeBookApplication.getBookController();
             bc.setRecords(records);
-            bc.setAdapter(adapter);
+
         }
 
     }
