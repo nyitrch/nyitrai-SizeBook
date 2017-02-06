@@ -9,13 +9,14 @@
         android:text="Enter a new record below! You will be able to add measurements later."
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:padding="12dp"
         android:id="@+id/newRecordText" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name of Person *"
+        android:hint="Name of Person *"
         android:ems="10"
         android:id="@+id/recordName" />
 
@@ -23,18 +24,20 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        android:text="Comment"
+        android:hint="Comment"
         android:ems="10"
         android:id="@+id/recordComment" />
 
     <DatePicker
-        android:layout_height="200dp"
+        android:layout_height="0dp"
+        android:paddingLeft="18dp"
         android:layout_weight="1"
         android:id="@+id/recordDate"
         android:layout_width="fill_parent" />
 
     <TextView
         android:text="* Required"
+        android:padding="12dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/requiredText" />

@@ -6,17 +6,25 @@
 
     <TextView
         android:text="Current SizeBook records: "
+        android:padding="12dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/oldRecordsTitle" />
 
     <ListView
-        android:id="@+id/oldRecordsList"
+        android:id="@+id/oldRecords"
         android:layout_width="fill_parent"
         android:layout_height="260dp"
         android:layout_weight="1" >
 
     </ListView>
+
+    <TextView
+        android:text="Tap a record to add measurements or edit it, or hit the button below to create a new record."
+        android:padding="12dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/helpText" />
 
     <Button
         android:text="Add New SizeBook Record"

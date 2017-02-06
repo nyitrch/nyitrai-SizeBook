@@ -15,41 +15,71 @@ import java.util.Date;
  */
 
 public class SizeBookNewRecordActivity extends Activity implements SView<SizeBook> {
-
-    private EditText recordName;
-    private DatePicker recordDate;
-    private EditText recordComment;
-
-    private String name;
-    private Date date;
-    private String comment;
-
+    /**
+     * Called when activity is first created. In this, the default date for the DatePicker is set,
+     * the create button updates records and closes the activity, and this view is added to the
+     * SizeBook model via the SizeBookApplication go-between.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newrecord);
 
-        recordName = (EditText) findViewById(R.id.recordName);
-        recordComment = (EditText) findViewById(R.id.recordComment);
-        recordDate = (DatePicker) findViewById(R.id.recordDate);
-
         // Set default date for DatePicker to current date.
+        DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
         setCurrentDate(recordDate);
 
+        // Create record button press.
         Button createButton = (Button) findViewById(R.id.createButton);
-
         createButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                name = recordName.getText().toString();
-                comment = recordComment.getText().toString();
-                date = getDateFromDatePicker(recordDate);
-
-                BookController bc = SizeBookApplication.getBookController();
-                bc.createRecord(name, date, comment);
+                // Tell controller to update the records and exit.
+                updateRecords();
+                finish();
             }
         });
+        // Add view to our SizeBookApplication.
+        SizeBook sb = SizeBookApplication.getSizeBook();
+        sb.addView(this);
+    }
+
+    /**
+     * Generic update method from interface. Calls updateRecords().
+     */
+    public void update(SizeBook sizeBook) {
+        updateRecords();
+    }
+
+    /**
+     * Does normal destroy stuff and also removes view from
+     * SizeBook via SizeBookApplication go-between.
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SizeBook sb = SizeBookApplication.getSizeBook();
+        sb.deleteView(this);
+    }
+
+    /**
+     * Loads variables from user input, converts them into the format used in the model SizeBook,
+     * and passes them through the controller, creating a new record for the model SizeBook.
+     */
+    public void updateRecords() {
+        // Load variables.
+        EditText recordName = (EditText) findViewById(R.id.recordName);
+        EditText recordComment = (EditText) findViewById(R.id.recordComment);
+        DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
+
+        // Convert variables.
+        String name = recordName.getText().toString();
+        String comment = recordComment.getText().toString();
+        Date date = getDateFromDatePicker(recordDate);
+
+        // Pass info from user through to controller with the command to create a new record.
+        BookController bc = SizeBookApplication.getBookController();
+        bc.createRecord(name, date, comment);
     }
 
     /**
@@ -80,7 +110,4 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
         return calendar.getTime();
     }
 
-    public void update(SizeBook sizeBook) {
-
-    }
 }

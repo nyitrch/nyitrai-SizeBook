@@ -1,6 +1,8 @@
 package com.ualberta.nyitrai.nyitrai_sizebook;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,31 +32,50 @@ import java.util.ArrayList;
 public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
     /** File where SizeBook info is saved on device. */
-    private static final String FILENAME = "SizeBook.sav";
+    private static final String FILENAME = "nyitrai-SizeBook.sav";
 
-    private ListView oldRecordList;
+    private ListView oldRecords;
 
-    private ArrayList<Record> recordList;
-    private ArrayAdapter<Record> adapter;
-
+    /**
+     * This is called when the activity is first created.
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Button newRecordButton = (Button) findViewById(R.id.newRecordButton);
-        oldRecordList = (ListView) findViewById(R.id.oldRecordsList);
+        oldRecords = (ListView) findViewById(R.id.oldRecords);
 
+        // New Record Button Pressed
+        Button newRecordButton = (Button) findViewById(R.id.newRecordButton);
         newRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // User pressed button. Hey Controller, user told me he wants to add a new record.
+                // Get records from controller.
+                BookController bc = SizeBookApplication.getBookController();
+                ArrayList<Record> records = bc.getRecords();
+
                 Intent intent = new Intent(SizeBookActivity.this,
                         SizeBookNewRecordActivity.class);
                 startActivity(intent);
-                BookController bc = SizeBookApplication.getBookController();
-                
             }
         });
+    }
+
+    /**
+     * Called after onCreate() or onRestart(). That is, after the activity
+     * comes into view for the first time, or again after being stopped.
+     * <br><br>The basic function of onStart() here is to load the recordList form the file stored
+     * on the Android device.
+     */
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+
+        loadFromFile();
     }
 
     private void loadFromFile() {
@@ -68,22 +89,41 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
             // http://stackoverflow.com/
             // questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
             Type listType = new TypeToken<ArrayList<Record>>(){}.getType();
-            recordList = gson.fromJson(in, listType);
+            ArrayList<Record> records = gson.fromJson(in, listType);
+            ArrayAdapter<Record> adapter = new ArrayAdapter<Record>(this,
+                    R.layout.list_item, records);
 
+            // Send records and adapter to controller.
+            BookController bc = SizeBookApplication.getBookController();
+            bc.setRecords(records);
+            bc.setAdapter(adapter);
+
+            // If file is not found, create new record list and new adapter.
         } catch (FileNotFoundException e) {
-            recordList = new ArrayList<Record>();
+
+            ArrayList<Record> records = new ArrayList<Record>();
+            ArrayAdapter<Record> adapter = new ArrayAdapter<Record>(this,
+                    R.layout.list_item, records);
+
+            // Send new empty records and adapter to controller.
+            BookController bc = SizeBookApplication.getBookController();
+            bc.setRecords(records);
+            bc.setAdapter(adapter);
         }
 
     }
 
     private void saveInFile() {
         try {
+            BookController bc = SizeBookApplication.getBookController();
+            ArrayList<Record> records = bc.getRecords();
+
             FileOutputStream fos = openFileOutput(FILENAME,
                     Context.MODE_PRIVATE);
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 
             Gson gson = new Gson();
-            gson.toJson(recordList, out);
+            gson.toJson(records, out);
             out.flush();
 
             fos.close();

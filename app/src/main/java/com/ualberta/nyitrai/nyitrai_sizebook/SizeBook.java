@@ -1,5 +1,7 @@
 package com.ualberta.nyitrai.nyitrai_sizebook;
 
+import android.widget.ArrayAdapter;
+
 import java.util.ArrayList;
 
 /**
@@ -9,12 +11,22 @@ import java.util.ArrayList;
 public class SizeBook extends SModel<SView> {
 
     protected ArrayList<Record> records;
+    protected ArrayAdapter<Record> adapter;
 
     public ArrayList<Record> getRecords() {
         return records;
     }
+    public ArrayAdapter<Record> getAdapter() { return adapter; }
 
-    public void newRecord(Record record) { records.add(record); }
+    public void newRecord(Record record) {
+        records.add(record);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void deleteRecord(Record record) {
+        records.remove(record);
+        adapter.notifyDataSetChanged();
+    }
 
     SizeBook() {
         super();
