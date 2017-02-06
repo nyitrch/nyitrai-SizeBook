@@ -16,6 +16,17 @@ import java.util.Date;
 
 public class SizeBookNewRecordActivity extends Activity implements SView<SizeBook> {
     /**
+     * Boolean flag that notifies this view whether it has already been updated or not.
+     * Set to false on creation of activity. When the "Create New Record" button is pressed
+     * this flag is set to true, and the view updates the model.<br/><br/>
+     *
+     * This is done to prevent looping in the MVC structure where this view updates the model,
+     * then the model notifies all its views to update, and this view updates the model again,
+     * and then the model notifies all its views to update, etc.
+     */
+    private boolean updated;
+
+    /**
      * Called when activity is first created. In this, the default date for the DatePicker is set,
      * the create button updates records and closes the activity, and this view is added to the
      * SizeBook model via the SizeBookApplication go-between.
@@ -24,6 +35,8 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newrecord);
+
+        updated = false;
 
         // Set default date for DatePicker to current date.
         DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
@@ -67,19 +80,24 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
      * and passes them through the controller, creating a new record for the model SizeBook.
      */
     public void updateRecords() {
-        // Load variables.
-        EditText recordName = (EditText) findViewById(R.id.recordName);
-        EditText recordComment = (EditText) findViewById(R.id.recordComment);
-        DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
+        // If the records have not yet been updated, update them. Otherwise do nothing.
+        if (!updated) {
+            updated = true;
 
-        // Convert variables.
-        String name = recordName.getText().toString();
-        String comment = recordComment.getText().toString();
-        Date date = getDateFromDatePicker(recordDate);
+            // Load variables.
+            EditText recordName = (EditText) findViewById(R.id.recordName);
+            EditText recordComment = (EditText) findViewById(R.id.recordComment);
+            DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
 
-        // Pass info from user through to controller with the command to create a new record.
-        BookController bc = SizeBookApplication.getBookController();
-        bc.createRecord(name, date, comment);
+            // Convert variables.
+            String name = recordName.getText().toString();
+            String comment = recordComment.getText().toString();
+            Date date = getDateFromDatePicker(recordDate);
+
+            // Pass info from user through to controller with the command to create a new record.
+            BookController bc = SizeBookApplication.getBookController();
+            bc.createRecord(name, date, comment);
+        }
     }
 
     /**

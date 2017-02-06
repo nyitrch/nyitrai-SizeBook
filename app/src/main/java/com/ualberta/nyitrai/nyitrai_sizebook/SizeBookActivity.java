@@ -52,16 +52,15 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
         newRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // User pressed button. Hey Controller, user told me he wants to add a new record.
-                // Get records from controller.
-                BookController bc = SizeBookApplication.getBookController();
-                ArrayList<Record> records = bc.getRecords();
-
+                // Launches activity to get user input for new record.
                 Intent intent = new Intent(SizeBookActivity.this,
                         SizeBookNewRecordActivity.class);
                 startActivity(intent);
             }
         });
+        // Add view to our SizeBookApplication.
+        SizeBook sb = SizeBookApplication.getSizeBook();
+        sb.addView(this);
     }
 
     /**
@@ -137,7 +136,7 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     }
 
     public void update(SizeBook sizeBook) {
-
+        loadFromFile();
     }
 
 }

@@ -21,6 +21,7 @@ public class SizeBook extends SModel<SView> {
     public void newRecord(Record record) {
         records.add(record);
         adapter.notifyDataSetChanged();
+        notifyViews();
     }
 
     public void deleteRecord(Record record) {
