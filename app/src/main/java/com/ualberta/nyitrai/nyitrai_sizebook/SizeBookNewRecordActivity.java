@@ -1,12 +1,22 @@
 package com.ualberta.nyitrai.nyitrai_sizebook;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,16 +25,8 @@ import java.util.Date;
  */
 
 public class SizeBookNewRecordActivity extends Activity implements SView<SizeBook> {
-    /**
-     * Boolean flag that notifies this view whether it has already been updated or not.
-     * Set to false on creation of activity. When the "Create New Record" button is pressed
-     * this flag is set to true, and the view updates the model.<br/><br/>
-     *
-     * This is done to prevent looping in the MVC structure where this view updates the model,
-     * then the model notifies all its views to update, and this view updates the model again,
-     * and then the model notifies all its views to update, etc.
-     */
-    private boolean updated;
+
+    private static final String FILENAME = "nyitrai-SizeBook.sav";
 
     /**
      * Called when activity is first created. In this, the default date for the DatePicker is set,
@@ -36,8 +38,6 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newrecord);
 
-        updated = false;
-
         // Set default date for DatePicker to current date.
         DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
         setCurrentDate(recordDate);
@@ -47,9 +47,21 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
         createButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // Tell controller to update the records and exit.
-                updateRecords();
-                finish();
+
+                Record newRecord = createRecord();
+
+                if (newRecord != null) {
+                    /* Pass user entered record back to the previous activity using GSON and JSON.
+                    I found out how to do this from
+                    http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
+                    on 2/9/2017. And from this
+                    http://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents
+                    on 2/9/2017. */
+                    Intent intent = new Intent();
+                    intent.putExtra("record", (new Gson()).toJson(newRecord));
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
             }
         });
         // Add view to our SizeBookApplication.
@@ -58,11 +70,10 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
     }
 
     /**
-     * Generic update method from interface. Calls updateRecords().
+     * Generic update method from interface. This view doesn't display or deal with
+     * any information from the model so there is nothing to update.
      */
-    public void update(SizeBook sizeBook) {
-        updateRecords();
-    }
+    public void update(SizeBook sizeBook) {}
 
     /**
      * Does normal destroy stuff and also removes view from
@@ -77,26 +88,29 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
 
     /**
      * Loads variables from user input, converts them into the format used in the model SizeBook,
-     * and passes them through the controller, creating a new record for the model SizeBook.
+     * and returns it in the form of a Record.
      */
-    public void updateRecords() {
-        // If the records have not yet been updated, update them. Otherwise do nothing.
-        if (!updated) {
-            updated = true;
+    public Record createRecord() {
+        // Load variables.
+        EditText recordName = (EditText) findViewById(R.id.recordName);
+        EditText recordComment = (EditText) findViewById(R.id.recordComment);
+        DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
 
-            // Load variables.
-            EditText recordName = (EditText) findViewById(R.id.recordName);
-            EditText recordComment = (EditText) findViewById(R.id.recordComment);
-            DatePicker recordDate = (DatePicker) findViewById(R.id.recordDate);
+        // Convert variables.
+        String name = recordName.getText().toString();
+        String comment = recordComment.getText().toString();
+        Date date = getDateFromDatePicker(recordDate);
 
-            // Convert variables.
-            String name = recordName.getText().toString();
-            String comment = recordComment.getText().toString();
-            Date date = getDateFromDatePicker(recordDate);
-
-            // Pass info from user through to controller with the command to create a new record.
-            BookController bc = SizeBookApplication.getBookController();
-            bc.createRecord(name, date, comment);
+        // Name is required to be entered.
+        if (!name.isEmpty() && !name.trim().equals("")) {
+            // Create new record, set its comment.
+            Record newRecord = new Record(name, date);
+            newRecord.setComment(comment);
+            return newRecord;
+        } else {
+            // If no name is entered, refuse to continue.
+            recordName.setError("Name entry is required!");
+            return null;
         }
     }
 

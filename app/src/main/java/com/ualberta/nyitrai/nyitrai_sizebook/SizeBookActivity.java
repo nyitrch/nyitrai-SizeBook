@@ -36,6 +36,7 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
     private ListView oldRecords;
     private ArrayAdapter<Record> adapter;
+    private ArrayList<Record> records;
 
     /**
      * This is called when the activity is first created.
@@ -46,18 +47,16 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        // Initialize oldRecords from file.
         oldRecords = (ListView) findViewById(R.id.oldRecords);
-
-        // New Record Button Pressed
         Button newRecordButton = (Button) findViewById(R.id.newRecordButton);
+
         newRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Launches activity to get user input for new record.
                 Intent intent = new Intent(SizeBookActivity.this,
                         SizeBookNewRecordActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
         // Add view to our SizeBookApplication.
@@ -79,9 +78,9 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
         // Get records from controller and setup adapter.
         BookController bc = SizeBookApplication.getBookController();
-        ArrayList<Record> records = bc.getRecords();
+        records = bc.getRecords();
+        adapter = bc.getAdapter();
 
-        adapter = new ArrayAdapter<Record>(this, R.layout.list_item, records);
         oldRecords.setAdapter(adapter);
     }
 
@@ -109,6 +108,8 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
             // Send old records to controller.
             BookController bc = SizeBookApplication.getBookController();
             bc.setRecords(records);
+            adapter = new ArrayAdapter<Record>(this, R.layout.list_item, records);
+            bc.setAdapter(adapter);
 
             // If file is not found, create new record list and new adapter.
         } catch (FileNotFoundException e) {
