@@ -41,8 +41,11 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
         setContentView(R.layout.editrecord);
 
         oldFields = (ListView) findViewById(R.id.oldFields);
+
         Button saveButton = (Button) findViewById(R.id.saveButton);
         Button newFieldButton = (Button) findViewById(R.id.newFieldButton);
+        Button deleteButton = (Button) findViewById(R.id.deleteButton);
+
         EditText recordName = (EditText) findViewById(R.id.recordName);
         EditText recordComment = (EditText) findViewById(R.id.recordComment);
         TextView recordDate = (TextView) findViewById(R.id.recordDate);
@@ -97,9 +100,19 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
             }
         });
 
-        /**
-         * Buttons on ListView items to edit fields.
-         */
+        /** Button that deletes the selected record. */
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Record deleteRecord = createDeleteRecord();
+                Intent intent = new Intent();
+                intent.putExtra("record", (new Gson()).toJson(deleteRecord));
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        /** Buttons on ListView items to edit fields. */
         oldFields.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
@@ -198,6 +211,13 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
             return null;
         }
     }
+    /** Creates a Record that notifies the preceding activity of delete request. */
+    public Record createDeleteRecord() {
+        Record deleteRecord = new Record("DELETE_RECORD", new Date(6453634));
+        deleteRecord.setComment("DELETE_RECORD");
+        return deleteRecord;
+    }
+
 
     /**
      * Generic update method from interface. This view doesn't display or deal with

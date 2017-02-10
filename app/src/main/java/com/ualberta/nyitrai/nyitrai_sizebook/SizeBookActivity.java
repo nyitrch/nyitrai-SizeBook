@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by nyitrai on 2/5/2017.
@@ -119,9 +120,15 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
                 Gson gson = new Gson();
                 Record newRecord = gson.fromJson(strNewRecord, Record.class);
 
-                // Remove the old measurement and add the new one.
+                // If the user did not hit the Delete Record button, add the record in.
+                if (!newRecord.getName().equals("DELETE_RECORD") &&
+                        !newRecord.getComment().equals("DELETE_RECORD") &&
+                        newRecord.getDate() != new Date(6453634)) {
+                    records.add(newRecord);
+                }
+
+                // Remove the old record.
                 records.remove(recordEditPosition);
-                records.add(newRecord);
 
                 adapter.notifyDataSetChanged();
                 saveInFile();

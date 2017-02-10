@@ -34,7 +34,7 @@
         android:layout_weight="1"
         android:id="@+id/recordDate"
         android:layout_width="fill_parent"
-        android:datePickerMode="spinner" />
+        android:datePickerMode="calendar" />
 
     <TextView
         android:text="* Required"

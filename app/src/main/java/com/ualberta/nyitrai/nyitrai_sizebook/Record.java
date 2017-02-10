@@ -50,8 +50,11 @@ public class Record {
     @Override
     public String toString() {
         String text = "Name: " + this.getName()
-                + "\nDate: " +  this.getDate().toString()
-                + "\n\nComment: " + this.getComment();
+                + "\nDate: " +  this.getDate().toString();
+
+        if (!this.getComment().isEmpty()) {
+            text += "\nComment: " + this.getComment();
+        }
 
         if (fields != null) {
             text += "\n\n";
