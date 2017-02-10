@@ -49,8 +49,8 @@ public class Record {
 
     @Override
     public String toString() {
-        return this.getName()
-                + "\nDate Created: " +  this.getDate().toString()
+        return "Name: " + this.getName()
+                + "\nDate: " +  this.getDate().toString()
                 + "\n\nComment: " + this.getComment();
         /*
         if (fields != null) {

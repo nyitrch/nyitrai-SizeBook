@@ -5,8 +5,8 @@ package com.ualberta.nyitrai.nyitrai_sizebook;
  */
 
 public interface Field {
-    public float getMeasurement();
-    public void setMeasurement(float measurement);
+    public double getMeasurement();
+    public void setMeasurement(double measurement);
     public String getFieldName();
     public void setFieldName(String fieldName);
 }

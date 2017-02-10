@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
-    <TextView
-        android:text="Enter a new record below! You will be able to add measurements later."
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:id="@+id/newRecordText" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Name of Person *"
-        android:ems="10"
+        android:hint="Name of Person"
+        android:padding="12dp"
         android:id="@+id/recordName" />
+
+    <TextView
+        android:text="Date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:id="@+id/recordDate" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:hint="Comment"
-        android:ems="10"
+        android:padding="12dp"
         android:id="@+id/recordComment" />
 
-    <DatePicker
-        android:layout_height="0dp"
-        android:paddingLeft="18dp"
-        android:layout_weight="1"
-        android:id="@+id/recordDate"
+    <ListView
+        android:id="@+id/oldFields"
         android:layout_width="fill_parent"
-        android:datePickerMode="spinner" />
+        android:layout_height="260dp"
+        android:layout_weight="0.4"
+        android:scrollbars="vertical" >
 
-    <TextView
-        android:text="* Required"
-        android:padding="12dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/requiredText" />
+    </ListView>
 
     <Button
-        android:text="Create SizeBook Record"
+        android:text="Add New Field"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/createButton"
+        android:id="@+id/newFieldButton"
         style="@style/Widget.AppCompat.Button.Colored" />
+
+    <Button
+        android:text="Save Changes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saveButton"
+        style="@style/Widget.AppCompat.Button.Colored" />
+
 </LinearLayout>

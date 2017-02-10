@@ -25,9 +25,6 @@ import java.util.Date;
  */
 
 public class SizeBookNewRecordActivity extends Activity implements SView<SizeBook> {
-
-    private static final String FILENAME = "nyitrai-SizeBook.sav";
-
     /**
      * Called when activity is first created. In this, the default date for the DatePicker is set,
      * the create button updates records and closes the activity, and this view is added to the

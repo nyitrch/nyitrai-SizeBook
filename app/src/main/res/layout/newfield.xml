@@ -6,47 +6,45 @@
     android:orientation="vertical" >
 
     <TextView
-        android:text="Enter a new record below! You will be able to add measurements later."
+        android:text="Create a new measurement for your record! Add a type of measurement and a measurement."
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:id="@+id/newRecordText" />
+        android:id="@+id/newFieldTitle" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Name of Person *"
-        android:ems="10"
-        android:id="@+id/recordName" />
+        android:hint="Type of Measurement *"
+        android:padding="12dp"
+        android:id="@+id/fieldName" />
 
     <EditText
+        android:hint="Measurement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:hint="Comment"
-        android:ems="10"
-        android:id="@+id/recordComment" />
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:id="@+id/fieldMeasurement" />
 
-    <DatePicker
+    <Space
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingLeft="18dp"
-        android:layout_weight="1"
-        android:id="@+id/recordDate"
-        android:layout_width="fill_parent"
-        android:datePickerMode="spinner" />
+        android:layout_weight="1" />
 
     <TextView
-        android:text="* Required"
-        android:padding="12dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/requiredText" />
+        android:padding="12dp"
+        android:id="@+id/requiredText"
+        android:hint="* Required" />
 
     <Button
-        android:text="Create SizeBook Record"
+        android:text="Create New Measurement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/createButton"
         style="@style/Widget.AppCompat.Button.Colored" />
+
 </LinearLayout>

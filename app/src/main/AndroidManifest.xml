@@ -19,6 +19,9 @@
 
         </activity>
         <activity android:name=".SizeBookNewRecordActivity"></activity>
+        <activity android:name=".SizeBookEditRecordActivity"></activity>
+        <activity android:name=".SizeBookEditFieldActivity"></activity>
+        <activity android:name=".SizeBookNewFieldActivity"></activity>
 
     </application>
 

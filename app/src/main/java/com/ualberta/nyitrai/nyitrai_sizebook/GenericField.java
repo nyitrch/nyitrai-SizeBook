@@ -5,18 +5,18 @@ package com.ualberta.nyitrai.nyitrai_sizebook;
  */
 
 public class GenericField implements Field {
-    private float measurement;
+    private double measurement;
     private String fieldName;
 
-    public GenericField(String fieldName, float measurement) {
+    public GenericField(String fieldName, double measurement) {
         this.measurement = measurement;
         this.fieldName = fieldName;
     }
 
-    public float getMeasurement() {
+    public double getMeasurement() {
         return measurement;
     }
-    public void setMeasurement(float measurement) {
+    public void setMeasurement(double measurement) {
         this.measurement = measurement;
     }
 
@@ -25,6 +25,11 @@ public class GenericField implements Field {
     }
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    @Override
+    public String toString() {
+        return this.getFieldName() + ": " + this.getMeasurement();
     }
 
 }

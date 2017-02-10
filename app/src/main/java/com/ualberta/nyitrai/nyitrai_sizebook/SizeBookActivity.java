@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -37,8 +38,6 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     private ListView oldRecords;
     private ArrayAdapter<Record> adapter;
     private ArrayList<Record> records;
-    private String strRecord;
-    private boolean newRecordStatus;
 
     /**
      * This is called when the activity is first created.
@@ -48,9 +47,6 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        // When the app is first started, a new record has not been created.
-        newRecordStatus = false;
 
         oldRecords = (ListView) findViewById(R.id.oldRecords);
         Button newRecordButton = (Button) findViewById(R.id.newRecordButton);
@@ -64,6 +60,26 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
                 startActivityForResult(intent, 1);
             }
         });
+
+        oldRecords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+
+                // Get the record that was clicked on.
+                Record record = (Record)oldRecords.getAdapter().getItem(position);
+
+                Intent intent = new Intent(SizeBookActivity.this,
+                        SizeBookEditRecordActivity.class);
+
+                // Pass record to EditRecordActivity.
+                intent.putExtra("record", (new Gson()).toJson(record));
+                setResult(RESULT_OK, intent);
+
+                // Launch EditRecordActivity
+                startActivityForResult(intent, 2);
+            }
+        });
+
         // Add view to our SizeBookApplication.
         SizeBook sb = SizeBookApplication.getSizeBook();
         sb.addView(this);
@@ -72,15 +88,18 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     /**
      * Takes data from SizeBookNewRecordActivity when it finishes. Code taken from
      * http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
-     * @param requestCode
+     * @param requestCode Determines which activity the result is coming from. 1 = NewRecordActivity
+     *                    2 = EditRecordActivity
      * @param resultCode
-     * @param data The actual JSON string of the Record from SizeBookNewRecordActivity
+     * @param data The actual JSON string of the Record from SizeBookNewRecordActivity.
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 1) {
+            // requestCode 1 means a new record has been created.
             if (resultCode == RESULT_OK) {
-                strRecord = data.getStringExtra("record");
+                String strRecord = data.getStringExtra("record");
                 Gson gson = new Gson();
                 Record newRecord = gson.fromJson(strRecord, Record.class);
 
@@ -89,6 +108,9 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
                 adapter.notifyDataSetChanged();
                 saveInFile();
             }
+        } else if (requestCode == 2) {
+            // requestCode 2 means a record has been edited or deleted.
+
         }
     }
 
