@@ -37,6 +37,8 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     private ListView oldRecords;
     private ArrayAdapter<Record> adapter;
     private ArrayList<Record> records;
+    private String strRecord;
+    private boolean newRecordStatus;
 
     /**
      * This is called when the activity is first created.
@@ -46,6 +48,9 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        // When the app is first started, a new record has not been created.
+        newRecordStatus = false;
 
         oldRecords = (ListView) findViewById(R.id.oldRecords);
         Button newRecordButton = (Button) findViewById(R.id.newRecordButton);
@@ -65,6 +70,29 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     }
 
     /**
+     * Takes data from SizeBookNewRecordActivity when it finishes. Code taken from
+     * http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
+     * @param requestCode
+     * @param resultCode
+     * @param data The actual JSON string of the Record from SizeBookNewRecordActivity
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                strRecord = data.getStringExtra("record");
+                Gson gson = new Gson();
+                Record newRecord = gson.fromJson(strRecord, Record.class);
+
+                records.add(newRecord);
+
+                adapter.notifyDataSetChanged();
+                saveInFile();
+            }
+        }
+    }
+
+    /**
      * Called after onCreate() or onRestart(). That is, after the activity
      * comes into view for the first time, or again after being stopped.
      * <br><br>The basic function of onStart() here is to load the recordList form the file stored
@@ -73,14 +101,23 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     @Override
     protected void onStart() {
         super.onStart();
+        BookController bc = SizeBookApplication.getBookController();
+
+        // If a new record has been created, create it with the controller.
+        /*if (newRecordStatus) {
+            Gson gson = new Gson();
+            Record newRecord = gson.fromJson(strRecord, Record.class);
+            bc.createRecord(newRecord);
+            adapter.notifyDataSetChanged();
+            saveInFile();
+            newRecordStatus = false;
+        }*/
 
         loadFromFile();
 
-        // Get records from controller and setup adapter.
-        BookController bc = SizeBookApplication.getBookController();
+        // Get records and adapter from controller and setup adapter.
         records = bc.getRecords();
-        adapter = bc.getAdapter();
-
+        adapter = new ArrayAdapter<Record>(this, R.layout.list_item, records);
         oldRecords.setAdapter(adapter);
     }
 
@@ -99,27 +136,24 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
             Gson gson = new Gson();
 
-            // The following lines were taken on Jan 24, 2017 18:19 from:
-            // http://stackoverflow.com/
-            // questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            /* The following lines were taken on Jan 24, 2017 18:19 from:
+            http://stackoverflow.com/
+            questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            */
             Type listType = new TypeToken<ArrayList<Record>>(){}.getType();
-            ArrayList<Record> records = gson.fromJson(in, listType);
+            records = gson.fromJson(in, listType);
 
-            // Send old records to controller.
+            // Send old records that were just read in to the controller.
             BookController bc = SizeBookApplication.getBookController();
             bc.setRecords(records);
-            adapter = new ArrayAdapter<Record>(this, R.layout.list_item, records);
-            bc.setAdapter(adapter);
 
-            // If file is not found, create new record list and new adapter.
+            // If file is not found, create new record list.
         } catch (FileNotFoundException e) {
-
-            ArrayList<Record> records = new ArrayList<Record>();
-
             // Send new empty records to controller.
+            records = new ArrayList<Record>();
+
             BookController bc = SizeBookApplication.getBookController();
             bc.setRecords(records);
-
         }
 
     }

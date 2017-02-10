@@ -11,6 +11,7 @@ public class Record {
     private String name;
     private Date date;
     private String comment;
+    protected ArrayList<Field> fields;
 
     public Record(String name) {
         this.name = name;
@@ -37,24 +38,27 @@ public class Record {
         this.comment = comment;
     }
 
-    protected ArrayList<Field> fields;
-
     public ArrayList<Field> getFields() {
         return fields;
     }
-
-    public void newField(Field field) {
+    public void setFields(ArrayList<Field> newFields) { this.fields = newFields; }
+    public void addField(Field field) {
         fields.add(field);
     }
+    public void deleteField(Field field) { fields.remove(field); }
 
     @Override
     public String toString() {
-        String text = "";
-        for (Field field : fields) {
-            text += field.getFieldName() + " : " + String.valueOf(field.getMeasurement()) + "\n";
-
+        return this.getName()
+                + "\nDate Created: " +  this.getDate().toString()
+                + "\n\nComment: " + this.getComment();
+        /*
+        if (fields != null) {
+            for (Field field : fields) {
+                text += field.getFieldName() + " : " + String.valueOf(field.getMeasurement()) + "\n";
+            }
         }
-        return text;
+        */
     }
 
 }

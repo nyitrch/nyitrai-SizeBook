@@ -19,26 +19,13 @@ public class BookController implements SController {
     public BookController(SizeBook sb) { this.sb = sb; }
 
     public ArrayList<Record> getRecords() { return sb.getRecords(); }
-    public void setRecords(ArrayList<Record> records) { sb.records = records; }
+    public void setRecords(ArrayList<Record> records) { sb.setRecords(records); }
 
-    public ArrayAdapter<Record> getAdapter() { return sb.getAdapter(); }
-    public void setAdapter(ArrayAdapter<Record> adapter) { sb.adapter = adapter; }
-
-    public void createRecord(String name, Date date, String comment) {
-
-        // Create the record with the given name, date, and comment.
-        Record record = new Record(name, date);
-        record.setComment(comment);
-
+    public void createRecord(Record record) {
         sb.newRecord(record);
     }
 
-    public void deleteRecord(String name, Date date, String comment) {
-
-        // Delete the given record.
-        Record record = new Record(name, date);
-        record.setComment(comment);
-
+    public void deleteRecord(Record record) {
         sb.deleteRecord(record);
     }
 }

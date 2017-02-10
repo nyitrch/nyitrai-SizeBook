@@ -106,6 +106,7 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
             // Create new record, set its comment.
             Record newRecord = new Record(name, date);
             newRecord.setComment(comment);
+
             return newRecord;
         } else {
             // If no name is entered, refuse to continue.
@@ -137,8 +138,8 @@ public class SizeBookNewRecordActivity extends Activity implements SView<SizeBoo
      */
     public Date getDateFromDatePicker(DatePicker datePicker) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(datePicker.getDayOfMonth(), datePicker.getMonth(),
-                datePicker.getYear());
+        calendar.set(datePicker.getYear(), datePicker.getMonth(),
+                datePicker.getDayOfMonth());
         return calendar.getTime();
     }
 

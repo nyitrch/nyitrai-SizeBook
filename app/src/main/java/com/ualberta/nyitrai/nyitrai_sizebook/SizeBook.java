@@ -11,22 +11,18 @@ import java.util.ArrayList;
 public class SizeBook extends SModel<SView> {
 
     protected ArrayList<Record> records;
-    protected ArrayAdapter<Record> adapter;
-
     public ArrayList<Record> getRecords() {
         return records;
     }
-    public ArrayAdapter<Record> getAdapter() { return adapter; }
+    public void setRecords(ArrayList<Record> newRecords) { this.records = newRecords; }
 
     public void newRecord(Record record) {
         records.add(record);
-        adapter.notifyDataSetChanged();
         notifyViews();
     }
 
     public void deleteRecord(Record record) {
         records.remove(record);
-        adapter.notifyDataSetChanged();
         notifyViews();
     }
 

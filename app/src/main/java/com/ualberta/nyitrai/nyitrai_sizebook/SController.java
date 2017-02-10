@@ -14,6 +14,6 @@ public interface SController {
     public ArrayList<Record> getRecords();
     public void setRecords(ArrayList<Record> records);
 
-    public void createRecord(String name, Date date, String comment);
-    public void deleteRecord(String name, Date date, String comment);
+    public void createRecord(Record record);
+    public void deleteRecord(Record record);
 }
