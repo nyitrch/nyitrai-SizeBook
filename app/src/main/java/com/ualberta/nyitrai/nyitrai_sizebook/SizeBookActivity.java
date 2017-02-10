@@ -31,6 +31,11 @@ import java.util.Date;
  * Created by nyitrai on 2/5/2017.
  */
 
+/**
+ * Main activity of app. This activity handles saving and loading data from the android device,
+ * displaying records, deleting records selected by the user from the SizeBookEditRecordActivity,
+ * and allowing the user to create a new record in the SizeBookNewRecordActivity.
+ */
 public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
     /** File where SizeBook info is saved on device. */
@@ -42,28 +47,29 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
     private int recordEditPosition;
 
-    /**
-     * This is called when the activity is first created.
-     * @param savedInstanceState
-     */
+    /** This is called when the activity is first created.
+     * @param savedInstanceState */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        // Initialize ListView and Button
         oldRecords = (ListView) findViewById(R.id.oldRecords);
         Button newRecordButton = (Button) findViewById(R.id.newRecordButton);
 
+        // New Record button press. Creates a new record.
         newRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Launches activity to get user input for new record.
+                // Launches activity to get user input for a new record.
                 Intent intent = new Intent(SizeBookActivity.this,
                         SizeBookNewRecordActivity.class);
                 startActivityForResult(intent, 1);
             }
         });
 
+        // Click in item in ListView. Edits the chosen record.
         oldRecords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
@@ -83,7 +89,6 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
                 startActivityForResult(intent, 2);
             }
         });
-
         // Add view to our SizeBookApplication.
         SizeBook sb = SizeBookApplication.getSizeBook();
         sb.addView(this);
@@ -92,7 +97,8 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     /**
      * Takes data from SizeBookNewRecordActivity when it finishes. Code taken from
      * http://stackoverflow.com/questions/14292398/how-to-pass-data-from-2nd-activity-to-1st-activity-when-pressed-back-android
-     * @param requestCode Determines which activity the result is coming from. 1 = NewRecordActivity
+     * @param requestCode Determines which activity the result is coming from.
+     *                    1 = NewRecordActivity
      *                    2 = EditRecordActivity
      * @param resultCode
      * @param data The actual JSON string of the Record from SizeBookNewRecordActivity.
@@ -138,28 +144,18 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
     /**
      * Called after onCreate() or onRestart(). That is, after the activity
-     * comes into view for the first time, or again after being stopped.
-     * <br><br>The basic function of onStart() here is to load the recordList form the file stored
+     * comes into view for the first time, or again after being stopped.<br></br>
+     *
+     * The basic function of onStart() here is to load the records form the file stored
      * on the Android device.
      */
     @Override
     protected void onStart() {
         super.onStart();
-        BookController bc = SizeBookApplication.getBookController();
-
-        // If a new record has been created, create it with the controller.
-        /*if (newRecordStatus) {
-            Gson gson = new Gson();
-            Record newRecord = gson.fromJson(strRecord, Record.class);
-            bc.createRecord(newRecord);
-            adapter.notifyDataSetChanged();
-            saveInFile();
-            newRecordStatus = false;
-        }*/
-
         loadFromFile();
 
         // Get records and adapter from controller and setup adapter.
+        BookController bc = SizeBookApplication.getBookController();
         records = bc.getRecords();
         adapter = new ArrayAdapter<Record>(this, R.layout.list_item, records);
         oldRecords.setAdapter(adapter);
@@ -202,6 +198,10 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
 
     }
 
+    /**
+     * Save records into file with GSON. First grabs fresh records from the controller, then
+     * writes to the file with GSON.
+     */
     private void saveInFile() {
         try {
             BookController bc = SizeBookApplication.getBookController();
@@ -225,6 +225,8 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
         }
     }
 
+    /**Update command causes the activity to reload from the Android file.
+     * @param sizeBook */
     public void update(SizeBook sizeBook) {
         loadFromFile();
     }

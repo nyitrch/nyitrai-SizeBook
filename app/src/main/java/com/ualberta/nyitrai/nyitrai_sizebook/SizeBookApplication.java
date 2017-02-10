@@ -6,6 +6,9 @@ import android.app.Application;
  * Created by nyitrai on 2/5/2017.
  */
 
+/**
+ * In between class for the SizeBook and the BookController.
+ */
 public class SizeBookApplication extends Application {
     transient private static SizeBook sizeBook = null;
 

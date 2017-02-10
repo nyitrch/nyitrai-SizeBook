@@ -14,10 +14,15 @@ import com.google.gson.Gson;
  * Created by nyitrai on 2/10/2017.
  */
 
+/**
+ * Handles the editing of an existing field. This includes changing the elements of the field,
+ * or deleting it. Changes are not saved until the "Save Changes" button is pressed.<br></br>
+ *
+ * Called from SizeBookEditRecordActivity.
+ */
 public class SizeBookEditFieldActivity extends Activity implements SView<SizeBook> {
 
-    /**
-     * Called when activity is first created. Initialization is done here instead of onStart
+    /** Called when activity is first created. Initialization is done here instead of onStart
      * because this view doesn't save anything to the model. It just passes upwards back
      * to other views.
      * @param savedInstanceState
@@ -26,6 +31,7 @@ public class SizeBookEditFieldActivity extends Activity implements SView<SizeBoo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editfield);
 
+        // Initialization of Buttons and EditTexts.
         Button saveButton = (Button) findViewById(R.id.saveButton);
         Button deleteButton = (Button) findViewById(R.id.deleteButton);
         EditText fieldName = (EditText) findViewById(R.id.fieldName);
@@ -36,9 +42,11 @@ public class SizeBookEditFieldActivity extends Activity implements SView<SizeBoo
         Gson gson = new Gson();
         final GenericField oldField = gson.fromJson(strField, GenericField.class);
 
+        // Sets the current values of the field to be displayed in the EditTexts.
         fieldName.setText(oldField.getFieldName());
         fieldMeasurement.setText(String.valueOf(oldField.getMeasurement()));
 
+        // Save Button button press. Sends changes up to the SizeBookEditRecordActivity.
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +67,7 @@ public class SizeBookEditFieldActivity extends Activity implements SView<SizeBoo
             }
         });
 
+        // Delete Button button press. Sends delete notification to SizeBookEditRecordActivity.
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,12 +78,9 @@ public class SizeBookEditFieldActivity extends Activity implements SView<SizeBoo
                 finish();
             }
         });
-
     }
 
-    /**
-     * Loads variables from user input, converts them into the Field format, and returns them.
-     */
+    /** Loads variables from user input, converts them into the Field format, and returns them. */
     public GenericField createField() {
         // Load variables.
         EditText fieldName = (EditText) findViewById(R.id.fieldName);
@@ -103,10 +109,8 @@ public class SizeBookEditFieldActivity extends Activity implements SView<SizeBoo
             return null;
         }
     }
-    /**
-     * Creates a GenericField that notifies the above activity of delete request.
-     *
-     */
+    /** Creates a GenericField that notifies the above activity of delete request. I
+     * know this isn't the best way to do this. */
     public GenericField createDeleteField() {
         return new GenericField("DELETE_FIELD", 6453634.856867);
     }

@@ -13,9 +13,6 @@ import java.util.Date;
 public class BookController implements SController {
     SizeBook sb = null;
 
-    // File where SizeBook info is saved on device.
-    private static final String FILENAME = "nyitrai-SizeBook.sav";
-
     public BookController(SizeBook sb) { this.sb = sb; }
 
     public ArrayList<Record> getRecords() { return sb.getRecords(); }

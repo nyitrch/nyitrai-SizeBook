@@ -21,12 +21,21 @@ import java.util.Date;
  * Created by nyitrai on 2/10/2017.
  */
 
+/**
+ * Handles the editing of an existing record. This includes changing the elements of the record,
+ * adding new measurement to it, or deleting it. Changes are not saved until the "Save Changes"
+ * button is pressed.<br></br>
+ *
+ * Called from SizeBookActivity.
+ */
 public class SizeBookEditRecordActivity extends Activity implements SView<SizeBook> {
 
     private ListView oldFields;
     private ArrayAdapter<GenericField> adapter;
     private ArrayList<GenericField> fields;
 
+    // fieldEditPosition is used to keep track of which field is clicked on to edit, for deletion
+    // purposes.
     private int fieldEditPosition;
     private Record record;
 
@@ -42,10 +51,12 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
 
         oldFields = (ListView) findViewById(R.id.oldFields);
 
+        // Initialize Buttons.
         Button saveButton = (Button) findViewById(R.id.saveButton);
         Button newFieldButton = (Button) findViewById(R.id.newFieldButton);
         Button deleteButton = (Button) findViewById(R.id.deleteButton);
 
+        // Initialize text.
         EditText recordName = (EditText) findViewById(R.id.recordName);
         EditText recordComment = (EditText) findViewById(R.id.recordComment);
         TextView recordDate = (TextView) findViewById(R.id.recordDate);
@@ -63,10 +74,12 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
         adapter = new ArrayAdapter<GenericField>(this, R.layout.list_item, fields);
         oldFields.setAdapter(adapter);
 
+        // Set current values from record to the text.
         recordComment.setText(record.getComment());
         recordName.setText(record.getName());
         recordDate.setText(record.getDate().toString());
 
+        // Save Button button press. Returns the edited record to SizeBookActivity for saving.
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,9 +101,7 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
             }
         });
 
-        /**
-         * Button to create new field.
-         */
+        /**Button to create new field. */
         newFieldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +129,7 @@ public class SizeBookEditRecordActivity extends Activity implements SView<SizeBo
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
 
                 // Get the field that was clicked on.
-                Field field = (Field)oldFields.getAdapter().getItem(position);
+                GenericField field = (GenericField)oldFields.getAdapter().getItem(position);
 
                 fieldEditPosition = position;
 
