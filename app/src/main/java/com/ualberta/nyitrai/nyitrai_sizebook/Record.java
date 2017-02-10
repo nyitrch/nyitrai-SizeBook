@@ -11,7 +11,7 @@ public class Record {
     private String name;
     private Date date;
     private String comment;
-    protected ArrayList<Field> fields;
+    protected ArrayList<GenericField> fields;
 
     public Record(String name) {
         this.name = name;
@@ -38,27 +38,41 @@ public class Record {
         this.comment = comment;
     }
 
-    public ArrayList<Field> getFields() {
+    public ArrayList<GenericField> getFields() {
         return fields;
     }
-    public void setFields(ArrayList<Field> newFields) { this.fields = newFields; }
-    public void addField(Field field) {
+    public void setFields(ArrayList<GenericField> newFields) { this.fields = newFields; }
+    public void addField(GenericField field) {
         fields.add(field);
     }
-    public void deleteField(Field field) { fields.remove(field); }
+    public void deleteField(GenericField field) { fields.remove(field); }
 
     @Override
     public String toString() {
-        return "Name: " + this.getName()
+        String text = "Name: " + this.getName()
                 + "\nDate: " +  this.getDate().toString()
                 + "\n\nComment: " + this.getComment();
-        /*
+
         if (fields != null) {
+            text += "\n\n";
+            int i = 0;
             for (Field field : fields) {
-                text += field.getFieldName() + " : " + String.valueOf(field.getMeasurement()) + "\n";
+                if (field.getFieldName().toLowerCase() == "bust" ||
+                        field.getFieldName().toLowerCase() == "chest" ||
+                        field.getFieldName().toLowerCase() == "waist" ||
+                        field.getFieldName().toLowerCase() == "inseam") {
+
+                    text += field.getFieldName() + ": "
+                            + String.valueOf(field.getMeasurement()) + "\n";
+                    i++;
+                } else if (i < 5) {
+                    text += field.getFieldName() + ": "
+                            + String.valueOf(field.getMeasurement()) + "\n";
+                    i++;
+                }
             }
         }
-        */
+        return text;
     }
 
 }

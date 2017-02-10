@@ -39,6 +39,8 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
     private ArrayAdapter<Record> adapter;
     private ArrayList<Record> records;
 
+    private int recordEditPosition;
+
     /**
      * This is called when the activity is first created.
      * @param savedInstanceState
@@ -64,6 +66,7 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
         oldRecords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                recordEditPosition = position;
 
                 // Get the record that was clicked on.
                 Record record = (Record)oldRecords.getAdapter().getItem(position);
@@ -110,7 +113,19 @@ public class SizeBookActivity extends Activity implements SView<SizeBook> {
             }
         } else if (requestCode == 2) {
             // requestCode 2 means a record has been edited or deleted.
+            if (resultCode == RESULT_OK) {
 
+                String strNewRecord = data.getStringExtra("record");
+                Gson gson = new Gson();
+                Record newRecord = gson.fromJson(strNewRecord, Record.class);
+
+                // Remove the old measurement and add the new one.
+                records.remove(recordEditPosition);
+                records.add(newRecord);
+
+                adapter.notifyDataSetChanged();
+                saveInFile();
+            }
         }
     }
 

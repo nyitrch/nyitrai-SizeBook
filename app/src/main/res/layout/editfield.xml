@@ -1,53 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+
+    <TextView
+        android:text="Edit the measurement of your record!"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:id="@+id/editFieldTitle" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Name of Person"
+        android:hint="Type of Measurement *"
         android:padding="12dp"
-        android:id="@+id/recordName" />
-
-    <TextView
-        android:text="Date"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:id="@+id/recordDate" />
+        android:id="@+id/fieldName" />
 
     <EditText
+        android:hint="Measurement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:hint="Comment"
+        android:inputType="numberDecimal"
         android:padding="12dp"
-        android:id="@+id/recordComment" />
+        android:id="@+id/fieldMeasurement" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView
-        android:text="Measurements: "
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/measurements" />
-
-    <ListView
-        android:id="@+id/oldFields"
-        android:layout_width="fill_parent"
-        android:layout_height="260dp"
-        android:layout_weight="0.4"
-        android:scrollbars="vertical" >
-
-    </ListView>
+        android:padding="12dp"
+        android:id="@+id/requiredText"
+        android:hint="* Required" />
 
     <Button
-        android:text="Add New Measurement"
+        android:text="Delete Measurement"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/newFieldButton"
-        style="@style/Widget.AppCompat.Button.Colored" />
+        android:id="@+id/deleteButton" />
 
     <Button
         android:text="Save Changes"

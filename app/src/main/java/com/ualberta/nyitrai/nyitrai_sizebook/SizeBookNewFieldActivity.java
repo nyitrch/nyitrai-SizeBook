@@ -60,6 +60,7 @@ public class SizeBookNewFieldActivity extends Activity implements SView<SizeBook
 
         Double measurement;
 
+        // If the measurement is not entered, set it to 0.0.
         if (strMeasurement.isEmpty()){
             measurement = 0.0;
         } else {
